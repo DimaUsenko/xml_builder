@@ -1,11 +1,32 @@
 import streamlit as st
 from datetime import datetime
 
-from validators import validate_time_string
+from src.validators import validate_time_string
+
+import xml.etree.ElementTree as ET
+from xml.dom.minidom import parseString
 
 INCORRECT_STRING_ERROR = (
     'Время не соответствует шаблону "%Y-%m-%dT%H:%M:%SZ". Поле ввода не должно содержать пробелов.'
     'Пример корректно введенного времени: 2024-02-14T15:11:54Z')
+
+
+def generate_xml(message_data, organization_data):
+    # Создание корневого элемента Message с атрибутами
+    message = ET.Element("Message", PreviousUID=message_data['PreviousUID'], UID=message_data['UID'],
+                         CreateDate=message_data['CreateDate'])
+
+    # Добавление элемента Organization с его атрибутами внутрь Message
+    ET.SubElement(message, "Organization", ContractDate=organization_data['ContractDate'],
+                  GOZUID=organization_data['GOZUID'], Name=organization_data['Name'], KPP=organization_data['KPP'],
+                  INN=organization_data['INN'])
+
+    # Построение строки XML из дерева ET
+    rough_string = ET.tostring(message, 'utf-8')
+    reparsed = parseString(rough_string)
+
+    # Возвращаем красиво отформатированную XML строку
+    return reparsed.toprettyxml(indent="  ")
 
 
 # Функция для инициализации состояния сеанса. Сюда по сути нужно пихать только даты, т.к они обновляют состояние
@@ -15,7 +36,6 @@ def init_session_state():
         st.session_state.CreateDate = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     if 'ContractDate' not in st.session_state:
         st.session_state.ContractDate = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-
 
 
 def message_form():
@@ -63,8 +83,8 @@ def main():
     #
 
     if st.button('Generate XML'):
-        st.write(Message)
-        st.write(Organization)
+        xml_data = generate_xml(Message, Organization)
+        st.text_area("Generated XML", xml_data, height=300)
 
 
 if __name__ == '__main__':
