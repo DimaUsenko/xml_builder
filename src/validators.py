@@ -2,11 +2,9 @@ from datetime import datetime, timezone
 
 from configuration import GlobalErrorMessages
 
+
 error = GlobalErrorMessages()
 
-
-# Пример функции для владиации данных
-# Каждую функцию пишем в виде validate_{что валидируем}
 def validate_time_string(time_string: str, time_filename: str = '') -> bool:
     """
     Валидируем дату создания сообщения на:
@@ -15,7 +13,7 @@ def validate_time_string(time_string: str, time_filename: str = '') -> bool:
     3. Сравнение даты создания сообщения с текущей датой 
 
     :parameter(s) time_string: Строка, представляющее время,
-        полученная из поля воода streamlit
+        полученная из поля ввода streamlit
     :return: True, если строка в верном формате, иначе - False и сообщение об ошибке
     """
     try:
@@ -49,14 +47,15 @@ def validate_time_string(time_string: str, time_filename: str = '') -> bool:
  
         return False, error.UNCORRECT_STRING_FORMAT
 
-
-def validate_provider_inn(inn: int):
+def validate_provider_inn(inn: str) -> bool:
     """
     Валидируем ИНН поставщика на:
     1. Корректность формата
-    2. Проверка контрольного символа 
-    :parameter(s) inn: Число, представляющее ИНН поставщика, 
-    полученный из поля воода streamlit
+    2. Корректность значения ИНН
+    3. Проверка контрольного символа 
+
+    :parameter(s) inn: Строка, представляющая ИНН поставщика, 
+    полученная из поля ввода streamlit
     :return: True, если ИНН в верном формате, иначе - False и сообщение об ошибке
     """
 
@@ -69,7 +68,7 @@ def validate_provider_inn(inn: int):
     control_number_list = [2, 4, 10, 3, 5, 9, 4, 6, 8]
     control_index = 9
 
-    # Проверка нак количество цифр в числе
+    # Проверка на количество цифр в числе
     if len(inn_numbers) != 10:
         return False, error.UNCORRECT_STRING_FORMAT
     
@@ -89,6 +88,52 @@ def validate_provider_inn(inn: int):
 
     return True
 
+def validate_provider_kpp(kpp: str) -> bool:
+    """
+    Валидируем КПП поставщика на:
+    1. Корректность формата
+    2. Корректность значения КПП
+
+    :parameter(s) kpp: Строка, представляющая КПП поставщика, 
+    полученная из поля ввода streamlit
+    :return: True, если КПП в верном формате, иначе - False и сообщение об ошибке
+    """
+
+    # Проверяем наличие контента в поле ввода
+    if kpp is None:
+        return False, error.FIELD_STRING_FILL
+    
+    # Проверка на количество цифр в числе
+    if len(kpp) != 9:
+        return False, error.UNCORRECT_KPP_VALUE
+    
+    # Проверка первых двух символов 
+    if (kpp[0] + kpp[1]) == '00':
+        return False, error.UNCORRECT_KPP_VALUE
+   
+    return True
+
+def validate_provider_name(name: str) -> bool:
+    """Валидация наименования поставщика на количество символов в строке
+
+    :parameter(s) name: Строка, представляющая наименование поставщика, 
+    полученная из поля ввода streamlit, состоящая от 1 до 512 символов 
+    :return: True, если наипменование в верном формате, иначе - False и сообщение об ошибке 
+    """
+    # Проверяем наличие контента в поле ввода
+    if name is None:
+        return False, error.FIELD_STRING_FILL
+
+    # Проверяем на количество символов в строке
+    if len(name) < 1 and len(name) > 512:
+        return False, error.UNCORRECT_STRING_FORMAT
+
+    return True
+
+def validate_igk(igk: str) -> bool:
+
+    return True
+
 
 # def validate_():
-#     pass
+    # pass
