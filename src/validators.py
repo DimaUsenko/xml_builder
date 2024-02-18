@@ -28,7 +28,7 @@ def validate_time_string(time_string: str, time_filename: str = '') -> bool:
         time_comp1 = current_time.timestamp()
         time_comp2 = message_time.timestamp()
         if time_comp1 < time_comp2:
-            return False, error.MESSAGE_CREATION_DATE
+            return False, error.MESSAGE_CREATION_DATE_MESSAGE
         
         # Переводим имя дату с имени файла в формат
         filename_time = datetime.strptime(time_filename, '%Y-%m-%dT%H:%M:%SZ')
@@ -131,8 +131,54 @@ def validate_provider_name(name: str) -> bool:
     return True
 
 def validate_igk(igk: str) -> bool:
+    # Проверяем наличие контента в поле ввода
+    if igk is None:
+        return False, error.FIELD_STRING_FILL
+
+    # Проверяем на количество символов в строке
+    if len(igk) != 25:
+        return False, error.UNCORRECT_STRING_FORMAT
+    
+
 
     return True
+
+def validate_date_contract(time_string: str) -> bool:
+    """
+    Валидируем дату дату государственного контракта на:
+    1. Корректность формата
+    2. Сравнение даты государственного контракта с текущей датой 
+    3. То, что дата государственного контракта больше даты: 01.01.1970
+
+    :parameter(s) time_string: Строка, представляющее время,
+        полученная из поля ввода streamlit
+    :return: True, если строка в верном формате, иначе - False и сообщение об ошибке
+    """
+    try:
+        # Получаем нынешние дату и время 
+        current_time_no_format = datetime.now(timezone.utc)
+        current_time = current_time_no_format.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+        # Переводим дату контракта в формат
+        contract_time = datetime.strptime(time_string, '%Y-%m-%dT%H:%M:%SZ')
+
+        # Переводим время в число и сравниваем 
+        time_comp1 = current_time.timestamp()
+        time_comp2 = contract_time.timestamp()
+        if time_comp1 < time_comp2:
+            return False, error.MESSAGE_CREATION_DATE_CONTRACT
+
+        return True
+
+    # Проверка на корректность формата
+    except ValueError:
+        # Проверяем наличие контента в поле ввода
+        if time_string is None:
+            return False, error.FIELD_STRING_FILL
+ 
+        return False, error.UNCORRECT_STRING_FORMAT
+
+
 
 
 # def validate_():
