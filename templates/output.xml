@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<Message PreviousUID="0" UID="1234567890123456789012345-z080224" CreateDate="2024-02-19T10:39:49Z">
+  <Organization ContractDate="2024-02-19T10:39:49Z" GOZUID="1234567890123456789012345" Name="000 Pога и Kопьта" KPP="123456789" INN="1234567890"/>
+  <Forms>
+    <Form8 Quarter="1" Year="2024" ReportDate="2024-02-19T10:39:49Z">
+      <ContractSpending Income="0" Reserve="0" Other="прочие расходы(в копейках)" Rates="тарифы (накладные расходы) (в копейках)" Taxes="налоги (страховые взносы) (в копейках)" Salary="заработная плата (в копейках)" Total="Собственные расходы, в том числе(в копейках)"/>
+    </Form8>
+    <Contractors>
+      <Contractor ContractDate="2024-02-19T10:39:49Z" Name="0" INN="0" Total="0" FinishDate="2024-02-19T10:39:49Z" PaymentCurrent="0" PaymentPlanned="0" Cost="0" AccountNumber="00000000000000000000" ContractNumber="0"/>
+    </Contractors>
+    <PlannedPay Total="Планируемые расчеты с кооперацией (в копейках)" PaymentCurrent="0" PaymentPlanned="0"/>
+    <ContractFinance DepositeIncome="0" PlannedIncome="к поступлению от Заказчика (стр.4-стр.5)(в копейках)" DateBalance="2024-02-19T10:39:49Z" CashBalance="0" TotalRequirement="Итого потребность(в копейках)"/>
+  </Forms>
+  <Supplement ReportDate="2024-02-19T10:39:49Z">
+    <Parts>
+      <Part Quarter="4" Year="2023" Deviation="0" Requirement="0">
+        <Reasons>
+          <Reason>3</Reason>
+        </Reasons>
+      </Part>
+    </Parts>
+  </Supplement>
+</Message>
