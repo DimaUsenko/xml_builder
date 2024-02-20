@@ -29,7 +29,7 @@ def generate_xml(message_data, organization_data, form_data, contract_spending_d
                   Total=contract_spending_data['Total'])
 
     # Добавление элемента ContractSpending с его атрибутами внутрь Form8
-    contractors = ET.SubElement(forms, "Contractors")
+    contractors = ET.SubElement(form8, "Contractors")
 
     # Добавление элемента Contractor с его атрибутами внутрь Contractors
     ET.SubElement(contractors, "Contractor", ContractDate=form_data[2]['ContractDate'],
@@ -46,11 +46,11 @@ def generate_xml(message_data, organization_data, form_data, contract_spending_d
     #               AccountNumber=form_data[2]['AccountNumber'], ContractNumber=form_data[2]['ContractNumber'])
 
     # Добавление элемента PlannedPay с его атрибутами внутрь Forms
-    ET.SubElement(forms, "PlannedPay", Total=form_data[3]['Total'], PaymentCurrent=form_data[3]['PaymentCurrent'],
+    ET.SubElement(form8, "PlannedPay", Total=form_data[3]['Total'], PaymentCurrent=form_data[3]['PaymentCurrent'],
                   PaymentPlanned=form_data[3]['PaymentPlanned'])
 
     # Добавление элемента ContractFinance с его атрибутами внутрь Forms
-    ET.SubElement(forms, "ContractFinance", DepositeIncome=form_data[4]['DepositeIncome'],
+    ET.SubElement(form8, "ContractFinance", DepositeIncome=form_data[4]['DepositeIncome'],
                   PlannedIncome=form_data[4]['PlannedIncome'], DateBalance=form_data[4]['DateBalance'],
                   CashBalance=form_data[4]['CashBalance'], TotalRequirement=form_data[4]['TotalRequirement'])
 
