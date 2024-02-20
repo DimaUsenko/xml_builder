@@ -55,7 +55,7 @@ def generate_xml(message_data, organization_data, form_data, contract_spending_d
                   CashBalance=form_data[4]['CashBalance'], TotalRequirement=form_data[4]['TotalRequirement'])
 
     # Добавление элемента Supplement внутрь Message
-    supplement = ET.SubElement(message, "Supplement", ReportDate=supplement_data['ReportDate'])
+    supplement = ET.SubElement(forms, "Supplement", ReportDate=supplement_data['ReportDate'])
 
     # Добавление элемента Parts внутрь Supplement
     parts = ET.SubElement(supplement, "Parts")
