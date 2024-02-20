@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Message PreviousUID="0" UID="1234567890123456789012345-z080224" CreateDate="2024-02-02T00:00:00Z (дата создания документа)">
+<Message
+        PreviousUID="0"
+        UID="1234567890123456789012345-z080224"
+        CreateDate="2024-02-02T00:00:00Z (дата создания документа)">
     <Organization ContractDate="2023-12-15T00:00:00Z"
-                  GOZUID="1234567890123456789012345(игK)" Name="000 Pога и Kопьта"
-                  KPP="123456789" INN="1234567890"/>
+                  GOZUID="1234567890123456789012345(игK)"
+                  Name="000 Pога и Kопьта"
+                  KPP="123456789"
+                  INN="1234567890"/>
     - <Forms>
         - <Form8 Quarter="1" Year="2024" ReportDate="2024-01-25T00:00:00Z">
             <ContractSpending Income="0" Reserve="0" Other="прочие расходы(в копейках)"
