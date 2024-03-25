@@ -89,3 +89,10 @@ def validate_quarter(quarter: str) -> tuple[bool, str]:
         return False, 'Допустимые значения: 1, 2, 3, 4'
 
     return True, '1'
+
+def validate_cash(value_list: list) -> tuple[bool, str]:
+    for value in value_list:
+        if not value.isdigit():
+            return False, 'Все величины в разделе указываются в копейках  '
+
+    return True, '1'

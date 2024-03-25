@@ -1,6 +1,10 @@
 from src.validators import *
+from src.xml_utils import generate_xml
 
 from datetime import datetime
+
+import io
+
 
 DATE_HELP = "Все даты указываются в формате временной метки с указанием часового пояса, например: 2024-12-31T23:59:59Z или 2024-12-31T23:59:59+03:00, в случае, если указание времени не требуется указывается T00:00:00Z"
 
@@ -49,8 +53,8 @@ def form_form():
     return {'Type': Type}
 
 
-def form8_form():
-    st.write('## Form8')
+def cash_form():
+    st.write('## Cash')
 
     Quarter = st.selectbox('Квартал (Quarter)', ('1', '2', '3', '4'))
     validate_wrapper(validate_quarter(Quarter))
@@ -64,70 +68,55 @@ def form8_form():
     return {'Quarter': Quarter, 'Year': Year, 'ReportDate': ReportDate}
 
 
-def contract_spending_form():
+def contract_spending_form(autocomplete: list = []):
     st.write('## Собственные расходы (ContractSpending)')
 
-    Income = st.text_input('Income', '', help='Указывается в копейках')
-    Reserve = st.text_input('Reserve', '', help='Указывается в копейках')
-    Other = st.text_input('Всего прочие расходы (Other)', '', help='Указывается в копейках')
-    Rates = st.text_input('Тарифы (Rates)', '', help='Указывается в копейках')
-    Taxes = st.text_input('Налоги (Taxes)', '', help='Указывается в копейках')
-    Salary = st.text_input('Заработная плата (Salary)', '', help='Указывается в копейках')
-    Total = st.text_input('Всего собственные расходы (Total)', '', help='Указывается в копейках')
+    # Создаю массив с пустыми строками, чтобы не возникало ошибки при вызове autocomplete[x]
+    if not autocomplete:
+        autocomplete = ['','','','','','','','','','']
 
-    return {'Income': Income, 'Reserve': Reserve, 'Other': Other, 'Rates': Rates, 'Taxes': Taxes, 'Salary': Salary,
-            'Total': Total}
+    Income = st.text_input('Income', autocomplete[9], help='Указывается в копейках')
+    Reserve = st.text_input('Reserve', autocomplete[8], help='Указывается в копейках')
+    Other = st.text_input('Всего прочие расходы (Other)', autocomplete[7], help='Указывается в копейках')
+    Repayment = st.text_input('Repayment', autocomplete[6], help='Указывается в копейках')
+    Return = st.text_input('Return', autocomplete[5], help='Указывается в копейках')
+    OtherTotal = st.text_input('OtherTotal', autocomplete[4], help='Указывается в копейках')
+    Rates = st.text_input('Тарифы (Rates)', autocomplete[3], help='Указывается в копейках')
+    Taxes = st.text_input('Налоги (Taxes)', autocomplete[2], help='Указывается в копейках')
+    Salary = st.text_input('Заработная плата (Salary)', autocomplete[1], help='Указывается в копейках')
+    Total = st.text_input('Всего собственные расходы (Total)', autocomplete[0], help='Указывается в копейках')
 
+    validate_list = [Income, Reserve, Other, Repayment, Return, OtherTotal, Rates, Taxes, Salary, Total]
+    validate_wrapper(validate_cash(validate_list))
+ 
+    return {'Income': Income, 'Reserve': Reserve, 'Other': Other,
+        'Repayment': Repayment, 'Return': Return,
+        'OtherTotal': OtherTotal, 'Rates': Rates, 
+        'Taxes': Taxes, 'Salary': Salary,'Total': Total}
+    
 
-def contractors_contractor_form():
-    st.write('## Contractors.Contractor')
-
-    ContractDate = st.text_input('Дата государственного контракта (ContractDate)', 'T00:00:00Z', help='В формате 2001-01-01T00:00:00Z')
-    validate_wrapper(validate_date(ContractDate))
-
-    Name = st.text_input('Наименование поставщика (Name)', key="Contractors_Name", value='', help='help')
-    INN = st.text_input('ИНН Поставщика (INN)', key="Contractors_INN", value='', help='help')
-    Total = st.text_input('Total', key="Contractors_Total", value='', help='Указывается в копейках')
-
-    FinishDate = st.text_input('FinishDate', 'T00:00:00Z', help='В формате 2001-01-01T00:00:00Z')
-    validate_wrapper(validate_date(FinishDate))
-
-    PaymentCurrent = st.text_input('PaymentCurrent', '', help='help')
-    PaymentPlanned = st.text_input('PaymentPlanned', '', help='help')
-    Cost = st.text_input('Cost', '', help='help')
-    AccountNumber = st.text_input('AccountNumber', '', help='help')
-    ContractNumber = st.text_input('ContractNumber', '', help='help')
-
-    return {'ContractDate': ContractDate, 'Name': Name, 'INN': INN, 'Total': Total, 'FinishDate': FinishDate,
-            'PaymentCurrent': PaymentCurrent,
-            'PaymentPlanned': PaymentPlanned, 'Cost': Cost, 'AccountNumber': AccountNumber,
-            'ContractNumber': ContractNumber}
-
-
-def planned_pay_form():
-    st.write('## Планируемые расчеты с кооперацией (PlannedPay)')
-
-    Total = st.text_input('Total', key="PlannedPay_Total", value='', help='help')
-    PaymentCurrent = st.text_input('PaymentCurrent', key="PlannedPay_PaymentCurrent", value='', help='help')
-    PaymentPlanned = st.text_input('PaymentPlanned', key="PlannedPay_PaymentPlanned", value='', help='help')
-
-    return {'Total': Total, 'PaymentCurrent': PaymentCurrent, 'PaymentPlanned': PaymentPlanned}
-
-
-def contract_finance_form():
+def contract_finance_form(autocomplete: list = []):
     st.write('## Финансовые показатели (ContractFinance)')
 
-    DepositeIncome = st.text_input('DepositeIncome', '', help='help')
-    PlannedIncome = st.text_input('К поступлению от заказчика (PlannedIncome)', '', help='help')
+    # Создаю массив с пустыми строками, чтобы не возникало ошибки при вызове autocomplete[x]
+    if not autocomplete:
+        autocomplete = ['','','','','','','','','','','','','','','','','']
 
-    DateBalance = st.text_input('DateBalance', 'T00:00:00Z', help='В формате 2024-02-08T00:00:00Z')
-    validate_wrapper(validate_date(DateBalance))
+    PlannedPay = st.text_input('(PlannedPay)',autocomplete[10], help='help')
+    TotalRequirement = st.text_input('Итого потребность головного исполнителя (TotalRequirement)',autocomplete[11], help='Указывается в копейках')
+    CashBalance = st.text_input('Фактичекский остаток денежных средств на отдельном счете головного исполнителя на дату составления кассового плана на очередной квартал (CashBalance)',autocomplete[12], help='help')
+    PlannedIncome = st.text_input('К поступлению от заказчика (PlannedIncome)',autocomplete[13], help='help')
+    PastPayments = st.text_input('(PastPayments)',autocomplete[14], help='help')
+    SeparateAccount = st.text_input('(SeparateAccount)',autocomplete[15], help='help')
+    BankAccount = st.text_input('(BankAccount)',autocomplete[16], help='help')
+    
+    validate_list = [PlannedPay, TotalRequirement, CashBalance, PlannedIncome, PastPayments, SeparateAccount, BankAccount]
+    validate_wrapper(validate_cash(validate_list))    
 
-    CashBalance = st.text_input('Фактичекский остаток денежных средств на отдельном счете головного исполнителя на дату составления кассового плана на очередной квартал (CashBalance)', '', help='help')
-    TotalRequirement = st.text_input('Итого потребность головного исполнителя (TotalRequirement)', '', help='Указывается в копейках')
-
-    return {'DepositeIncome': DepositeIncome, 'PlannedIncome': PlannedIncome, 'DateBalance': DateBalance,
-            'CashBalance': CashBalance, 'TotalRequirement': TotalRequirement}
+    return {'PlannedPay': PlannedPay, 'PastPayments': PastPayments, 
+            'SeparateAccount': SeparateAccount, 'BankAccount': BankAccount, 
+            'PlannedIncome': PlannedIncome, 'CashBalance': CashBalance, 
+            'TotalRequirement': TotalRequirement}
 
 
 def supplement_form():
@@ -139,24 +128,52 @@ def supplement_form():
     return {'ReportDate': ReportDate}
 
 
-def part_form():
+def parts_form():
     st.write('## Parts')
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        Quarter_1 = st.selectbox('Квартал (Quarter)', ('1', '2', '3', '4'), key="<uniquevalueofsomesort_1>")
+        validate_wrapper(validate_quarter(Quarter_1))
 
-    Quarter = st.selectbox('Квартал (Quarter)', ('1', '2', '3', '4'), key="<uniquevalueofsomesort>")
-    validate_wrapper(validate_quarter(Quarter))
+        Year_1 = st.text_input('Год (Year)', key="Part_Year_1", value=datetime.now().strftime("%Y"), help='help')
+        validate_wrapper(validate_year(Year_1))
 
-    Year = st.text_input('Год (Year)', key="Part_Year", value=datetime.now().strftime("%Y"), help='help')
-    validate_wrapper(validate_year(Year))
+        Deviation_1 = st.text_input('Величина отклонения (Deviation)', '', key="Deviation_1", help='help')
+        Requirement_1 = st.text_input('Заявленная потребность (Requirement)', '', key="Requirement_1", help='help')
+    with col2:
+        Quarter_2 = st.selectbox('Квартал (Quarter)', ('1', '2', '3', '4'), key="<uniquevalueofsomesort_2>")
+        validate_wrapper(validate_quarter(Quarter_2))
 
-    Deviation = st.text_input('Величина отклонения (Deviation)', '', help='help')
-    Requirement = st.text_input('Заявленная потребность (Requirement)', '', help='help')
+        Year_2 = st.text_input('Год (Year)', key="Part_Year_2", value=datetime.now().strftime("%Y"), help='help')
+        validate_wrapper(validate_year(Year_2))
 
-    return {'Quarter': Quarter, 'Year': Year, 'Deviation': Deviation, 'Requirement': Requirement}
+        Deviation_2 = st.text_input('Величина отклонения (Deviation)', '', key="Deviation_2", help='help')
+        Requirement_2 = st.text_input('Заявленная потребность (Requirement)', '', key="Requirement_2", help='help')
+
+    return [{'Quarter': Quarter_1, 'Year': Year_1, 'Deviation': Deviation_1, 'Requirement': Requirement_1}, 
+            {'Quarter': Quarter_2, 'Year': Year_2, 'Deviation': Deviation_2, 'Requirement': Requirement_2}]
 
 
 def reasons_form():
     st.write('## Код причины (Reasons)')
 
-    Reason = st.text_input('Код причины (Reason)', value='3', help='help')
+    col1, col2 = st.columns(2)
 
-    return {'Reason': Reason}
+    with col1:
+        Reason_11 = st.text_input('Код причины (Reason)', value='7', key="reason_1", help='help')
+    with col2:
+        Reason_21 = st.text_input('Код причины (Reason)', value='1', key="reason_2", help='help')
+        Reason_22 = st.text_input('Код причины (Reason)', value='2', key="reason_3", help='help')
+
+    return {'Reason_11': Reason_11, 'Reason_21': Reason_21, 'Reason_22': Reason_22}
+
+
+def view_xml(message, organization, form, contractSpending, supplement, part, reasons):
+    xml_data = generate_xml(message, organization, form, contractSpending, supplement, part, reasons)
+
+    st.text_area("Generated XML", xml_data, height=300)
+
+    xml_file = io.BytesIO(xml_data.encode('utf-8'))
+    
+    return xml_file
